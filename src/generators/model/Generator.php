@@ -461,10 +461,7 @@ class Generator extends \yii\gii\Generator
             } elseif ($column->allowNull && $column->defaultValue === null) {
                 $nullable[] = $column->name;
             } elseif (is_scalar($column->defaultValue)) {
-                if (!array_key_exists($column->defaultValue, $defaultValues)) {
-                    $defaultValues[$column->defaultValue] = [];
-                }
-                $defaultValues[$column->defaultValue][] = $column->name;
+                $defaultValues[var_export($column->defaultValue, true)][] = $column->name;
             }
             switch ($column->type) {
                 case Schema::TYPE_SMALLINT:
@@ -503,7 +500,6 @@ class Generator extends \yii\gii\Generator
         }
         if (!empty($defaultValues)) {
             foreach ($defaultValues as $defaultValue => $defaultValueColumns) {
-                $defaultValue = is_numeric($defaultValue) ? $defaultValue : "'$defaultValue'";
                 $rules[] = "[['" . implode("', '", $defaultValueColumns) . "'], 'default', 'value' => $defaultValue]";
             }
         }
